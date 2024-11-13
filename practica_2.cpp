@@ -1,12 +1,22 @@
+/*******************************
+* NOMBRE: #TuNombre#
+* PRIMER APELLIDO: #TuApellido#
+* SEGUNDO APELLIDO: #TuSegundoApellido#
+* DNI: #12345678#
+* EMAIL: #correo@gmail.com#
+********************************/
+
+/*******************************************************************************************************************************************
+ * 	Programa: RomboSegundaPractica
+ *
+ * 	Descripción:   Este programa imprime un rombo usando caracteres concéntricos   '@', '.' y 'o' dada una longitud por el usuario.
+ *                 La longitud del lado más externo del rombo no será mayor de 20 caracteres.
+ *
+ ******************************************************************************************************************************************/
+
 #include <stdio.h>
 
 int main(){
-
-  /*
-  Este programa imprime un rombo usando caracteres concéntricos
-  '@', '.' y 'o' dada una longitud por el usuario.
-  La longitud del lado más externo del rombo no será mayor de 20 caracteres.
-  */
 
   int longitud, vez;
 
@@ -20,13 +30,16 @@ int main(){
 
   }else{
     // Imprimir parte superior del rombo
+    // Este bucle imprimirá linea por línea tantas veces como longitud le hayamos asignado
         for (int linea = 0; linea < longitud; linea++) {
             // Imprimir espacios en blanco
+            //Para calcular los espacios en blanco por línea se sigue la fórmula (nespaciosblanco = longitud-linea)
             for (int nespaciosblanco = 0; nespaciosblanco < (longitud - linea - 1); nespaciosblanco++) {
                 printf(" ");
             }
 
             // Imprimir caracteres superiores izquierdos
+            // El número de caracteres a imprimir es igual al número de línea.
             for (int posicion = 0; posicion <= linea; posicion++) {
                 vez = posicion % 4;
                 if(vez==0){
