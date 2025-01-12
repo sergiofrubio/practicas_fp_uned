@@ -1,12 +1,14 @@
 /*******************************
-* NOMBRE: #TuNombre#
-* PRIMER APELLIDO: #TuApellido#
-* SEGUNDO APELLIDO: #TuSegundoApellido#
-* DNI: #12345678#
-* EMAIL: #correo@gmail.com#
+* NOMBRE: #Sergio#
+* PRIMER APELLIDO: #Física#
+* SEGUNDO APELLIDO: #Rubio#
+* DNI: #31896518A#
+* EMAIL: #sfisica3@alumno.uned.es#
+* TELEFONO: #643159006#
 ********************************/
+
 /***********
-*PrÃ¡ctica 4
+*Práctica 4
 ************/
 
 #include <stdio.h>
@@ -60,9 +62,17 @@ typedef struct TipoEdificio {
 
 typedef TipoEdificio Edificios[MAX_EDIFICIOS];
 
+/*-- TAD --*/
 typedef struct CalendarioMes {
-
+  TipoDia SumarDias(TipoDia dia, int N);
+  TipoDia DiaDeLaSemana(TipoFecha fecha);
+  int DiasDelMes(TipoFecha fecha);
+  void leerFecha();
+  void imprimirCalendario(TipoEdificio edificio, TipoApartamento apartamento, TipoString referenciaApartamento);
+private:
+  TipoFecha fecha;
 };
+
 
 void imprimirDatosReserva(TipoString nombre, int idEdificio, char tipoLujoApartamento, int j, TipoFecha fechaBuscar, int duracionEstanciaBuscar) {
   printf("\nDatos de la reserva: \n Edificio: %s (Id = %d)\n Referencia apartamento: APT%d%c%d\n FechaEntrada: %d/%d/%d\n Duracion estancia: %d dias\n",
@@ -84,7 +94,7 @@ bool bisiesto(int annio) {
 int CalcularDiasTotales(TipoFecha fechaBuscar, int duracionEstancia) {
   int diasTotales = 0;
 
-  // AÃ±os completos desde 1601 hasta el aÃ±o anterior al actual
+  // Años completos desde 1601 hasta el año anterior al actual
   for (int anno = 1601; anno < fechaBuscar.annio; anno++) {
 
     if (bisiesto(anno)) {
@@ -94,7 +104,7 @@ int CalcularDiasTotales(TipoFecha fechaBuscar, int duracionEstancia) {
     }
   }
 
-  // DÃ­as acumulados dentro del aÃ±o actual hasta el mes anterior al actual
+  // Días acumulados dentro del año actual hasta el mes anterior al actual
   for (int mes = 1; mes < fechaBuscar.mes; mes++) {
     switch (mes) {
 case 4: case 6: case 9: case 11:
@@ -112,38 +122,193 @@ case 4: case 6: case 9: case 11:
     }
   }
 
-  // DÃ­as del mes actual
+  // Días del mes actual
   diasTotales = diasTotales + fechaBuscar.dia;
 
-  // Agregar la duraciÃ³n de la estancia si es necesario
+  // Agregar la duración de la estancia si es necesario
   diasTotales = diasTotales + duracionEstancia;
 
   return diasTotales;
 }
 
-/*--- Procedimiento para sumar dÃ­as de la semana cÃ­clicamente ---*/
+/*--- Procedimiento para sumar días de la semana cíclicamente ---*/
 
-TipoDia SumarDias(TipoDia dia, int N) { /* N = el numÃ©ro por el que se incrementa la fecha */
+TipoDia CalendarioMes::SumarDias(TipoDia dia, int N) { /* N = el numéro por el que se incrementa la fecha */
 
   const int DiasSemana = 7;
   int aux;
 
-  aux = (int(dia) + N) % DiasSemana; /* Aux = ( DÃ­a referencia + incremento ) menos semanas enteras */
+  aux = (int(dia) + N) % DiasSemana; /* Aux = ( Día referencia + incremento ) menos semanas enteras */
 
   return TipoDia(aux);
 }
 
-/*--- Procedimiento para calcular el dÃ­a de la semana que corresponde a una fecha ---*/
+/*--- Procedimiento para calcular el día de la semana que corresponde a una fecha ---*/
 
-TipoDia DiaDeLaSemana(TipoFecha fecha) {
+void CalendarioMes::leerFecha() {
+  printf("\tSeleccion mes?");
+  scanf("%d", &fecha.mes);
+  printf("\tSeleccion annio?");
+  scanf("%d", &fecha.annio);
+}
+
+void CalendarioMes::imprimirCalendario(TipoEdificio edificio, TipoApartamento apartamento, TipoString referenciaApartamento) {
+  int ind; /* contador de posiciones del calendario */
+  int diaActual, reservaInicio, reservaFin;
+  bool diaReservado;
+  TipoDia PrimerDia;
+  TipoSecuencia actual;
+
+  fecha.dia = 1; /* iniciar el primer día de la fecha para poder determinar
+   cual es el primer día del mes*/
+
+  PrimerDia = DiaDeLaSemana(fecha); /* Calcular en que día de la semana cae el primer día del mes*/
+
+  /*--- Dibujar cabecera de calendario ---*/
+
+  if ((fecha.annio >= 1601 && fecha.annio <= 3000) && ((fecha.mes >= 1) && (fecha.mes <= 12))) {
+    /* el calendario finaliza para años fuera del rango o meses erroneos */
+
+    printf("\nEstado Mensual Apartamento: %s\n", referenciaApartamento);
+    printf("Edificio: %s\n", edificio.nombre);
+
+    switch (fecha.mes) {
+    case 1:
+      printf("ENERO     ");
+      break;
+    case 2:
+      printf("FEBRERO   ");
+      break;
+    case 3:
+      printf("MARZO     ");
+      break;
+    case 4:
+      printf("Abril     ");
+      break;
+    case 5:
+      printf("MAYO      ");
+      break;
+    case 6:
+      printf("JUNIO     ");
+      break;
+    case 7:
+      printf("JULIO     ");
+      break;
+    case 8:
+      printf("AGOSTO    ");
+      break;
+    case 9:
+      printf("SEPTIEMBRE");
+      break;
+    case 10:
+      printf("OCTUBRE   ");
+      break;
+    case 11:
+      printf("NOVIEMBRE ");
+      break;
+    case 12:
+      printf("DICIEMBRE ");
+      break;
+    }
+
+    printf("             ");
+    printf("%d\n", fecha.annio);
+    printf("===========================\n");
+    printf("LU  MA  MI  JU  VI | SA  DO\n");
+    printf("===========================\n");
+
+    /*--- Dibujar cuerpo de calendario ---*/
+
+    ind = 0;
+
+    for (int k = int(PrimerDia); k >= 1; k--) { /* imprimir blancos de principio de mes */
+      if (ind % 7 == 5) { /* imprimir barra de fín de semana */
+        printf("| ");
+      }
+      if (ind % 7 != 0 && ind % 7 != 5) { /* imprimir blanco entre campos si no es lunes o viernes */
+        printf(" ");
+      }
+      printf(" . ");
+      ind++;
+    }
+
+    for (int k = 0; k < DiasDelMes(fecha); k++) { /* imprimir todos los días del mes*/
+      if (ind != 0) {
+        if (ind % 7 == 0) { /* cambio de semana (linea ) si es necesario */
+          printf("\n");
+        }
+      }
+      if (ind % 7 == 5) { /* imprimir barra de fín de semana */
+        printf("| ");
+      }
+      if (ind % 7 != 0 && ind % 7 != 5) { /* imprimir blanco entre campos si no es lunes o viernes */
+        printf(" ");
+      }
+
+      // Comprobar si el día está reservado
+      diaReservado = false;
+      actual = apartamento.reservas;
+      fecha.dia = k + 1;
+      diaActual = CalcularDiasTotales(fecha, 0);
+
+      while (actual != NULL) {
+        reservaInicio = CalcularDiasTotales(actual->fechaEntrada, 0);
+        reservaFin = CalcularDiasTotales(actual->fechaEntrada, actual->duracionEstancia);
+
+        if (diaActual >= reservaInicio && diaActual < reservaFin) {
+          diaReservado = true;
+        }
+
+        actual = actual->siguiente;
+      }
+
+      if (diaReservado) {
+        printf("Re ");
+      } else {
+        printf("%2d ", k + 1);
+      }
+
+      ind++;
+    }
+
+    while (ind % 7 != 0) {
+      if (ind % 7 == 5) { /* imprimir barra de fín de semana */
+        printf("| ");
+      }
+      if (ind % 7 != 0 && ind % 7 != 5) { /* imprimir blanco entre campos si no es lundes viernes */
+        printf(" ");
+      }
+      printf(" . ");
+      ind++;
+    }
+    printf("\n");
+  }
+
+  // Imprimir detalles de las reservas
+  actual = apartamento.reservas;
+
+  if (actual!=NULL) {
+    printf("\nDetalles de las reservas:\n");
+    while (actual != NULL) {
+      printf("---------------------------\n");
+      printf("Reserva: %d/%d\n", actual->numReserva, actual->fechaEntrada.annio);
+      printf("Fecha de entrada: %d/%d/%d\n", actual->fechaEntrada.dia, actual->fechaEntrada.mes, actual->fechaEntrada.annio);
+      printf("Duracion: %d dias\n", actual->duracionEstancia);
+      printf("---------------------------\n");
+      actual = actual->siguiente;
+    }
+  }
+}
+
+TipoDia CalendarioMes::DiaDeLaSemana(TipoFecha fecha) {
 
   int M = fecha.mes;
   int A = fecha.annio;
-  int IncreDias;                         /* Incremento en dÃ­as de la semana */
-  int IncreAnnos;                        /* Incremento en dÃ­as por aÃ±os enteros */
-  int IncreBisiesto;                     /* Incremento en dÃ­as por aÃ±os bisiestos */
-  const int AnnoReferencia = 1601;       /* AÃ±o a partir del cual determinamos el dÃ­a */
-  const TipoDia DiaReferencia = Domingo; /* DÃ­a a partir del cual determinamos el dÃ­a*/
+  int IncreDias;                         /* Incremento en días de la semana */
+  int IncreAnnos;                        /* Incremento en días por años enteros */
+  int IncreBisiesto;                     /* Incremento en días por años bisiestos */
+  const int AnnoReferencia = 1601;       /* Año a partir del cual determinamos el día */
+  const TipoDia DiaReferencia = Domingo; /* Día a partir del cual determinamos el día*/
 
   if (M == 1) {
     IncreDias = 0;
@@ -171,9 +336,9 @@ TipoDia DiaDeLaSemana(TipoFecha fecha) {
     IncreDias = 5;
   }
 
-  IncreAnnos = A - AnnoReferencia; /* CÃ¡lculo de incremento de dÃ­as por aÃ±os completos desde aÃ±o referencia */
+  IncreAnnos = A - AnnoReferencia; /* Cálculo de incremento de días por años completos desde año referencia */
 
-  IncreBisiesto = 0; /* AÃ±adir dias por aÃ±os bisiestos */
+  IncreBisiesto = 0; /* Añadir dias por años bisiestos */
 
   for (int N = 1602; N < A; N++) {
     if (bisiesto(N)) {
@@ -181,21 +346,21 @@ TipoDia DiaDeLaSemana(TipoFecha fecha) {
     }
   }
 
-  if (bisiesto(A) && /* aÃ±adir un dÃ­a si la fecha a evaluar cae en un ano bisiesto
-                despues del dÃ­a 29 de febrero */
+  if (bisiesto(A) && /* añadir un día si la fecha a evaluar cae en un ano bisiesto
+                despues del día 29 de febrero */
       (M > 2)) {
     IncreDias++;
   }
 
-  IncreDias = IncreDias + IncreAnnos /* CÃ¡lculo de incremento total de dÃ­as */
+  IncreDias = IncreDias + IncreAnnos /* Cálculo de incremento total de días */
               + IncreBisiesto + fecha.dia;
 
   return SumarDias(DiaReferencia, IncreDias);
 }
 
-/*--- FunciÃ³n para calcular el nÃºmero de dÃ­as que contiene un mes ---*/
+/*--- Función para calcular el número de días que contiene un mes ---*/
 
-int DiasDelMes(TipoFecha fecha) {
+int CalendarioMes::DiasDelMes(TipoFecha fecha) {
   switch (fecha.mes) {
   case 2:
     if (bisiesto(fecha.annio)) {
@@ -255,7 +420,7 @@ void editarEdificio(Edificios & edificiosDisponibles) {
     scanf(" %s", &edificiosDisponibles[editEdificio-1].nombre);
     printf("\tNumero de apartamentos basicos,normales y de lujo? La suma de todos ellos debe ser 20.");
     scanf("%d%d%d", &nbasico, &nnormal, &nlujo);
-    printf("IMPORTANTE: Esta opcion borra los datos anteriores.\n Â¿Son correctos los nuevos datos? (S/N)");
+    printf("IMPORTANTE: Esta opcion borra los datos anteriores.\n ¿Son correctos los nuevos datos? (S/N)");
     scanf(" %c", &opcion);
     if (opcion=='S') {
       if (nbasico+nnormal+nlujo==20) {
@@ -279,7 +444,7 @@ void editarEdificio(Edificios & edificiosDisponibles) {
             actual = actual->siguiente;
             delete aEliminar;
           }
-          edificiosDisponibles[editEdificio-1].apartamentosDisponibles[i].reservas = NULL; // Lista vacÃ­a
+          edificiosDisponibles[editEdificio-1].apartamentosDisponibles[i].reservas = NULL; // Lista vacía
         }
         printf("Edificio %s (Id = %d) borrado correctamente\n", edificiosDisponibles[editEdificio-1].nombre, edificiosDisponibles[editEdificio-1].identificador );
       }
@@ -296,7 +461,7 @@ void listarEdificios(Edificios & edificiosDisponibles) {
   int nbasico=0;
   int nnormal=0;
   int nlujo=0;
-  printf("\nId  Nombre               Aptos BÃ¡sicos  Aptos Normales  Aptos de Lujo\n");
+  printf("\nId  Nombre               Aptos Básicos  Aptos Normales  Aptos de Lujo\n");
 
   for (int i=0; i<MAX_EDIFICIOS; i++) {
     if (edificiosDisponibles[i].visible) {
@@ -342,15 +507,14 @@ void apartamentosDisponibles(Edificios & edificiosDisponibles) {
   scanf("%d", &fechaBuscar.dia);
   printf("\tFecha Entrada: Mes?");
   scanf("%d", &fechaBuscar.mes);
-  printf("\tFecha Entrada: AÃ±o?");
+  printf("\tFecha Entrada: Año?");
   scanf("%d", &fechaBuscar.annio);
   printf("\tDias de duracion de la estancia?");
   scanf("%d", &duracionEstanciaBuscar);
 
-  fechaNuevaInicio = CalcularDiasTotales(fechaBuscar, 0);
-  fechaNuevaFin = CalcularDiasTotales(fechaBuscar, duracionEstanciaBuscar);
-
   if (edificiosDisponibles[idEdificio-1].identificador == idEdificio && edificiosDisponibles[idEdificio - 1].visible) {
+    fechaNuevaInicio = CalcularDiasTotales(fechaBuscar, 0);
+    fechaNuevaFin = CalcularDiasTotales(fechaBuscar, duracionEstanciaBuscar);
     for (int j=0; j<MAX_APARTAMENTOS; j++) {
       estaDisponible=true;
       actual = edificiosDisponibles[idEdificio - 1].apartamentosDisponibles[j].reservas;
@@ -415,11 +579,10 @@ void reservarApartamento(Edificios &edificiosDisponibles) {
   TipoFecha fechaBuscar;
   TipoSecuencia anterior, actual, proxima, nuevo;
 
-  // Entrada de datos
   printf("\nReservas apartamento:\n \tIdentificador de Edificio? ");
   scanf("%d", &idEdificio);
   printf("\tTipo de Apartamento (B-Basico/N-Normal/L-Lujo)? ");
-  scanf(" %c", &tipoLujoApartamento); // Espacio inicial para ignorar salto de lÃ­nea
+  scanf(" %c", &tipoLujoApartamento); // Espacio inicial para ignorar salto de línea
   printf("\tFecha Entrada: Dia? ");
   scanf("%d", &fechaBuscar.dia);
   printf("\tFecha Entrada: Mes? ");
@@ -438,7 +601,7 @@ void reservarApartamento(Edificios &edificiosDisponibles) {
 
     // Buscar apartamento del tipo solicitado
     for (int j=0; j<MAX_APARTAMENTOS; j++) {
-      //Se comprueba el tipo de apartamento. En caso de que no coincidan o no hayan disponibles aparecerÃ¡ un error.
+      //Se comprueba el tipo de apartamento. En caso de que no coincidan o no hayan disponibles aparecerá un error.
       if ((tipoLujoApartamento == 'B' && edificiosDisponibles[idEdificio - 1].apartamentosDisponibles[j].tipoLujo == Basico) ||
           (tipoLujoApartamento == 'N' && edificiosDisponibles[idEdificio - 1].apartamentosDisponibles[j].tipoLujo == Normal) ||
           (tipoLujoApartamento == 'L' && edificiosDisponibles[idEdificio - 1].apartamentosDisponibles[j].tipoLujo == Lujo)) {
@@ -464,7 +627,7 @@ void reservarApartamento(Edificios &edificiosDisponibles) {
                                  j,
                                  fechaBuscar,
                                  duracionEstanciaBuscar);
-            printf("\n Â¿Es correcta la operacion? (S/N)");
+            printf("\n ¿Es correcta la operacion? (S/N)");
             scanf(" %c", &opcion);
             if (opcion=='S') {
               nuevo = new TipoReserva;
@@ -494,7 +657,7 @@ void reservarApartamento(Edificios &edificiosDisponibles) {
                                  j,
                                  fechaBuscar,
                                  duracionEstanciaBuscar);
-            printf("\n Â¿Es correcta la operacion? (S/N)");
+            printf("\n ¿Es correcta la operacion? (S/N)");
             scanf(" %c", &opcion);
             if (opcion=='S') {
               nuevo = new TipoReserva;
@@ -510,7 +673,7 @@ void reservarApartamento(Edificios &edificiosDisponibles) {
             }
           }
         } else {
-          //La lista estÃ¡ vacÃ­a y se agrega automÃ¡ticamente la reserva
+          //La lista está vacía y se agrega automáticamente la reserva
           imprimirDatosReserva(edificiosDisponibles[idEdificio-1].nombre,
                                idEdificio,
                                tipoLujoApartamento,
@@ -518,7 +681,7 @@ void reservarApartamento(Edificios &edificiosDisponibles) {
                                fechaBuscar,
                                duracionEstanciaBuscar);
 
-          printf("\n Â¿Es correcta la operacion? (S/N)");
+          printf("\n ¿Es correcta la operacion? (S/N)");
           scanf(" %c", &opcion);
           if (opcion=='S') {
             nuevo = new TipoReserva;
@@ -543,176 +706,26 @@ void reservarApartamento(Edificios &edificiosDisponibles) {
 }
 
 void reservasMensualesApartamento(Edificios & edificiosDisponibles) {
-  TipoString referenciaApartamento;
-  int ind; /* contador de posiciones del calendario */
-  TipoFecha fecha;
-  TipoDia PrimerDia;
-  TipoSecuencia actual;
-  int edificio, apartamento, diaActual, reservaInicio, reservaFin;
-  bool diaReservado;
+  CalendarioMes calendario;
+  int edificio, apartamento;
   char opcion;
-
+  TipoString referenciaApartamento;
 
   printf("\nReservar mensuales por apartamento:\n \t Referencia apartamento? ");
   scanf("%s", &referenciaApartamento);
   do {
-    printf("\tSeleccion mes?");
-    scanf("%d", &fecha.mes);
-    printf("\tSeleccion annio?");
-    scanf("%d", &fecha.annio);
+    calendario.leerFecha();
+    edificio = (referenciaApartamento[3] - '0') * 10 + (referenciaApartamento[4] - '0'); // Extraer dos dígitos del edificio.
+    apartamento = (referenciaApartamento[6] - '0') * 10 + (referenciaApartamento[7] - '0'); // Extraer dos dígitos del apartamento.
 
-    edificio = (referenciaApartamento[3] - '0') * 10 + (referenciaApartamento[4] - '0'); // Extraer dos dÃ­gitos del edificio.
-    apartamento = (referenciaApartamento[6] - '0') * 10 + (referenciaApartamento[7] - '0'); // Extraer dos dÃ­gitos del apartamento.
-    //printf("%d , %d", edificio, apartamento);
-
-    // Validar Ã­ndices
     if (edificio < 1 || edificio > MAX_EDIFICIOS || apartamento < 1 || apartamento > MAX_APARTAMENTOS || !edificiosDisponibles[edificio - 1].visible) {
-      printf("Referencia de apartamento no vÃ¡lida.\n");
+      printf("Referencia de apartamento no válida.\n");
       return;
     }
 
-    fecha.dia = 1; /* iniciar el primer dÃ­a de la fecha para poder determinar
-   cual es el primer dÃ­a del mes*/
+    calendario.imprimirCalendario(edificiosDisponibles[edificio - 1], edificiosDisponibles[edificio - 1].apartamentosDisponibles[apartamento-1], referenciaApartamento);
 
-    PrimerDia = DiaDeLaSemana(fecha); /* Calcular en que dÃ­a de la semana cae el primer dÃ­a del mes*/
-
-    /*--- Dibujar cabecera de calendario ---*/
-
-    if ((fecha.annio >= 1601 && fecha.annio <= 3000) && ((fecha.mes >= 1) && (fecha.mes <= 12))) {
-      /* el calendario finaliza para aÃ±os fuera del rango o meses erroneos */
-
-      printf("\nEstado Mensual Apartamento: %s\n", referenciaApartamento);
-      printf("Edificio: %s\n", edificiosDisponibles[edificio - 1].nombre);
-
-      switch (fecha.mes) {
-      case 1:
-        printf("ENERO     ");
-        break;
-      case 2:
-        printf("FEBRERO   ");
-        break;
-      case 3:
-        printf("MARZO     ");
-        break;
-      case 4:
-        printf("Abril     ");
-        break;
-      case 5:
-        printf("MAYO      ");
-        break;
-      case 6:
-        printf("JUNIO     ");
-        break;
-      case 7:
-        printf("JULIO     ");
-        break;
-      case 8:
-        printf("AGOSTO    ");
-        break;
-      case 9:
-        printf("SEPTIEMBRE");
-        break;
-      case 10:
-        printf("OCTUBRE   ");
-        break;
-      case 11:
-        printf("NOVIEMBRE ");
-        break;
-      case 12:
-        printf("DICIEMBRE ");
-        break;
-      }
-
-      printf("             ");
-      printf("%d\n", fecha.annio);
-      printf("===========================\n");
-      printf("LU  MA  MI  JU  VI | SA  DO\n");
-      printf("===========================\n");
-
-      /*--- Dibujar cuerpo de calendario ---*/
-
-      ind = 0;
-
-      for (int k = int(PrimerDia); k >= 1; k--) { /* imprimir blancos de principio de mes */
-        if (ind % 7 == 5) { /* imprimir barra de fÃ­n de semana */
-          printf("| ");
-        }
-        if (ind % 7 != 0 && ind % 7 != 5) { /* imprimir blanco entre campos si no es lunes o viernes */
-          printf(" ");
-        }
-        printf(" . ");
-        ind++;
-      }
-
-      for (int k = 0; k < DiasDelMes(fecha); k++) { /* imprimir todos los dÃ­as del mes*/
-        if (ind != 0) {
-          if (ind % 7 == 0) { /* cambio de semana (linea ) si es necesario */
-            printf("\n");
-          }
-        }
-        if (ind % 7 == 5) { /* imprimir barra de fÃ­n de semana */
-          printf("| ");
-        }
-        if (ind % 7 != 0 && ind % 7 != 5) { /* imprimir blanco entre campos si no es lunes o viernes */
-          printf(" ");
-        }
-
-        // Comprobar si el dÃ­a estÃ¡ reservado
-        diaReservado = false;
-        actual = edificiosDisponibles[edificio - 1].apartamentosDisponibles[apartamento-1].reservas;
-        fecha.dia = k + 1;
-        diaActual = CalcularDiasTotales(fecha, 0);
-
-        while (actual != NULL) {
-          reservaInicio = CalcularDiasTotales(actual->fechaEntrada, 0);
-          reservaFin = CalcularDiasTotales(actual->fechaEntrada, actual->duracionEstancia);
-
-          if (diaActual >= reservaInicio && diaActual < reservaFin) {
-            diaReservado = true;
-            //break;
-          }
-
-          actual = actual->siguiente;
-        }
-
-        if (diaReservado) {
-          printf("Re ");
-        } else {
-          printf("%2d ", k + 1);
-        }
-
-        ind++;
-      }
-
-      while (ind % 7 != 0) {
-        if (ind % 7 == 5) { /* imprimir barra de fÃ­n de semana */
-          printf("| ");
-        }
-        if (ind % 7 != 0 && ind % 7 != 5) { /* imprimir blanco entre campos si no es lundes viernes */
-          printf(" ");
-        }
-        printf(" . ");
-        ind++;
-      }
-      printf("\n");
-    }
-
-    // Imprimir detalles de las reservas
-    actual = edificiosDisponibles[edificio - 1].apartamentosDisponibles[apartamento - 1].reservas;
-
-    if (actual!=NULL) {
-      printf("\nDetalles de las reservas:\n");
-      while (actual != NULL) {
-        printf("---------------------------\n");
-        printf("Reserva: %d/%d\n", actual->numReserva, actual->fechaEntrada.annio);
-        printf("Fecha de entrada: %d/%d/%d\n", actual->fechaEntrada.dia, actual->fechaEntrada.mes, actual->fechaEntrada.annio);
-        printf("Duracion: %d dias\n", actual->duracionEstancia);
-        printf("---------------------------\n");
-        actual = actual->siguiente;
-      }
-    }
-
-    printf("Â¿Desea consultar otro mes? S/N\n");
+    printf("¿Desea consultar otro mes? S/N\n");
     scanf(" %c", &opcion);
   } while (opcion != 'N');
 }
